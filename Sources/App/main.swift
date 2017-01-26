@@ -2,6 +2,7 @@ import Vapor
 import HTTP
 import MongoKitten
 import DotEnv
+import Foundation
 
 /**
  * Database
@@ -67,6 +68,7 @@ drop.get("/") { request in
     the data structure into any JSON data as if it
     were a native JSON data type.
 */
+
 drop.get("json") { request in
     return try JSON(node: [
         "number": 123,
@@ -80,6 +82,9 @@ drop.get("json") { request in
             ],
             "name": "Vapor",
             "lang": "Swift"
+        ]),
+        "sentence": try JSON(node: [
+            "msg": "Give me some head massage"
         ])
     ])
 }
@@ -110,6 +115,17 @@ drop.get("data", Int.self) { request, int in
     return try JSON(node: [
         "int": int,
         "name": request.data["name"]?.string ?? "no name"
+    ])
+}
+
+drop.post("data") { request in
+    guard let data = request.data["test"]?.string else {
+        return try JSON(node: [
+            "msg": "Failed post."
+        ])
+    }
+    return try JSON(node: [
+        "data": data
     ])
 }
 
